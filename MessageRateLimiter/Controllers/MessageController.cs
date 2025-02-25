@@ -35,18 +35,18 @@ public class MessageController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("messages/{account}")]
-    public async Task<ActionResult<MessageLogResponse>> GetMessages(
-        string account,
-        [FromQuery] DateTime? startTime = null,
-        [FromQuery] DateTime? endTime = null)
-    {
-        if ((startTime == null) != (endTime == null))
-        {
-            return BadRequest("Both start and end time must be provided together");
-        }
 
-        var response = await _rateLimitService.GetMessages(account, startTime, endTime);
-        return Ok(response);
+    [HttpGet("messages/by-account")]
+    public async Task<IActionResult> GetMessagesByAccount(string? account = null)
+    {
+        var stats = await _rateLimitService.GetMessagesByAccount(account);
+        return Ok(stats);
+    }
+
+    [HttpGet("messages/by-phone")]
+    public async Task<IActionResult> GetMessagesByPhoneNumber(string? phoneNumber = null)
+    {
+        var stats = await _rateLimitService.GetMessagesByPhoneNumber(phoneNumber);
+        return Ok(stats);
     }
 } 

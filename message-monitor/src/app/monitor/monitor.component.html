@@ -1,0 +1,37 @@
+<div class="monitor-container">
+  <div class="pane">
+    <h2>Accounts</h2>
+    <input 
+      type="text" 
+      [(ngModel)]="accountFilter" 
+      placeholder="Filter by account">
+    
+    <div class="stats-list">
+      <div class="stat-item" *ngFor="let stat of accountStats | keyvalue">
+        <div class="account">{{stat.key}}</div>
+        <div class="counts">
+          <span class="accepted">Accepted: {{stat.value.acceptedCount}}</span>
+          <span class="rejected">Rejected: {{stat.value.rejectedCount}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pane">
+    <h2>Phone Numbers</h2>
+    <input 
+      type="text" 
+      [(ngModel)]="numberFilter" 
+      placeholder="Filter by phone number">
+    
+    <div class="stats-list">
+      <div class="stat-item" *ngFor="let stat of numberStats | keyvalue">
+        <div class="number">{{stat.key}}</div>
+        <div class="counts">
+          <span class="accepted">Accepted: {{stat.value.acceptedCount}}</span>
+          <span class="rejected">Rejected: {{stat.value.rejectedCount}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,58 @@
+.monitor-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  height: 100vh;
+  background-color: #582369;
+  color: white;
+  font-size: 120%;
+}
+
+.pane {
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 20px;
+  background-color: #EE3E4E;
+  color: white;
+}
+
+input {
+  width: 70%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+.stats-list {
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+.stat-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.counts {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.accepted {
+  color: white;
+}
+
+.rejected {
+  color: white;
+}
+
+h2 {
+  color: white;
+}
+
+.account, .number {
+  font-weight: bold;
+} 

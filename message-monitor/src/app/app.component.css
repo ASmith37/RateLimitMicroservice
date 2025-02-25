@@ -1,0 +1,43 @@
+/* Set the background color for the entire monitor container */
+.monitor-container {
+    background-color: #582369; /* Dark purple background */
+    color: white; /* White text color for readability */
+    padding: 20px; /* Optional: Add some padding */
+    min-height: 100vh; /* Ensure the container takes full height */
+}
+
+/* Style for each pane */
+.pane {
+    background-color: #EE3E4E; /* Red background for panes */
+    color: white; /* White text color for readability */
+    margin: 10px; /* Optional: Add some margin between panes */
+    padding: 15px; /* Optional: Add some padding inside panes */
+    border-radius: 5px; /* Optional: Add rounded corners */
+}
+
+/* Additional styles for headings and text */
+h2 {
+    color: white; /* White text for headings */
+}
+
+.account, .number {
+    font-weight: bold; /* Make account and number text bold */
+}
+
+.counts {
+    margin-top: 10px; /* Add some space above counts */
+}
+
+/* Optional: Style for input fields */
+input {
+    padding: 10px; /* Add padding for input fields */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners for input fields */
+    margin-bottom: 10px; /* Space below input fields */
+}
+
+/* Optional: Style for the stats list */
+.stats-list {
+    max-height: 400px; /* Limit height of stats list */
+    overflow-y: auto; /* Enable vertical scrolling if needed */
+}

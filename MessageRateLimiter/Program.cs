@@ -24,6 +24,16 @@ public partial class Program
         builder.Services.AddScoped<IRateLimitService, RateLimitService>();
         builder.Services.AddHostedService<CleanupService>();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.WithOrigins("http://localhost:4200")
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+            });
+        });
+
         builder.Services.AddControllers();
 
         var app = builder.Build();
@@ -35,26 +45,8 @@ public partial class Program
         }
 
         app.UseRouting();
+        app.UseCors();
         app.MapControllers();
-
-        var summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        app.MapGet("/weatherforecast", () =>
-        {
-            var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-                .ToArray();
-            return forecast;
-        })
-        .WithName("GetWeatherForecast");
 
         app.Run();
     }
