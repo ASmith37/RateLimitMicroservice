@@ -1,0 +1,6 @@
+@MessageRateLimiter_HostAddress = http://localhost:5010
+
+GET {{MessageRateLimiter_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
