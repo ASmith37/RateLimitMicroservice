@@ -175,4 +175,108 @@ public class RateLimitService : IRateLimitService
 
         return true;
     }
+
+    public async Task<MessageLogResponse> GetMessages(string account, DateTime? startTime = null, DateTime? endTime = null)
+    {
+        var timeRange = startTime.HasValue
+            ? (Start: startTime.Value.ToUniversalTime(), End: endTime!.Value.ToUniversalTime())
+            : (Start: DateTime.UtcNow.AddSeconds(-1), End: DateTime.UtcNow);
+
+        var messages = await _context.MessageLogs
+            .Where(m => m.AccountNumber == account && 
+                        m.Timestamp >= timeRange.Start && 
+                        m.Timestamp <= timeRange.End)
+            .ToListAsync();
+
+        return new MessageLogResponse
+        {
+            AccountNumber = account,
+            StartTime = timeRange.Start,
+            EndTime = timeRange.End,
+            AcceptedMessages = messages.Where(m => m.Status == MessageStatus.Accepted)
+                .Select(m => new MessageLog
+                {
+                    Id = m.Id,
+                    AccountNumber = m.AccountNumber,
+                    PhoneNumber = m.PhoneNumber,
+                    Timestamp = m.Timestamp,
+                    Status = m.Status
+                }).ToList(),
+            RejectedMessages = messages.Where(m => m.Status == MessageStatus.Rejected)
+                .Select(m => new MessageLog
+                {
+                    Id = m.Id,
+                    AccountNumber = m.AccountNumber,
+                    PhoneNumber = m.PhoneNumber,
+                    Timestamp = m.Timestamp,
+                    Status = m.Status
+                }).ToList()
+        };
+    }
+
+    public async Task<Dictionary<string, MessageStats>> GetMessagesByAccount(
+        string? account = null, 
+        DateTime? startTime = null, 
+        DateTime? endTime = null)
+    {
+        var timeRange = startTime.HasValue
+            ? (Start: startTime.Value.ToUniversalTime(), End: endTime!.Value.ToUniversalTime())
+            : (Start: DateTime.UtcNow.AddSeconds(-1), End: DateTime.UtcNow);
+
+        var query = _context.MessageLogs
+            .Where(m => m.Timestamp >= timeRange.Start && m.Timestamp <= timeRange.End);
+
+        if (account != null)
+        {
+            query = query.Where(m => m.AccountNumber == account);
+        }
+
+        var stats = await query
+            .GroupBy(m => m.AccountNumber)
+            .Select(g => new
+            {
+                AccountNumber = g.Key,
+                Stats = new MessageStats
+                {
+                    AcceptedCount = g.Count(m => m.Status == MessageStatus.Accepted),
+                    RejectedCount = g.Count(m => m.Status == MessageStatus.Rejected)
+                }
+            })
+            .ToDictionaryAsync(x => x.AccountNumber, x => x.Stats);
+
+        return stats;
+    }
+
+    public async Task<Dictionary<string, MessageStats>> GetMessagesByPhoneNumber(
+        string? phoneNumber = null, 
+        DateTime? startTime = null, 
+        DateTime? endTime = null)
+    {
+        var timeRange = startTime.HasValue
+            ? (Start: startTime.Value.ToUniversalTime(), End: endTime!.Value.ToUniversalTime())
+            : (Start: DateTime.UtcNow.AddSeconds(-1), End: DateTime.UtcNow);
+
+        var query = _context.MessageLogs
+            .Where(m => m.Timestamp >= timeRange.Start && m.Timestamp <= timeRange.End);
+
+        if (phoneNumber != null)
+        {
+            query = query.Where(m => m.PhoneNumber == phoneNumber);
+        }
+
+        var stats = await query
+            .GroupBy(m => m.PhoneNumber)
+            .Select(g => new
+            {
+                PhoneNumber = g.Key,
+                Stats = new MessageStats
+                {
+                    AcceptedCount = g.Count(m => m.Status == MessageStatus.Accepted),
+                    RejectedCount = g.Count(m => m.Status == MessageStatus.Rejected)
+                }
+            })
+            .ToDictionaryAsync(x => x.PhoneNumber, x => x.Stats);
+
+        return stats;
+    }
 } 
